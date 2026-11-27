@@ -1,0 +1,40 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-test-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install tools
+        run: pip install flake8 coverage
+
+      - name: Compile
+        run: python -m py_compile app.py
+
+      - name: Code quality check
+        run: flake8 app.py test_app.py
+
+      - name: Unit tests
+        run: coverage run -m unittest -v
+
+      - name: Coverage gate (minimum 60%)
+        run: coverage report --include=app.py --fail-under=60
+
+      - name: Package
+        run: zip feedback-app-1.0.${{ github.run_number }}.zip app.py
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: feedback-app-1.0.${{ github.run_number }}
+          path: feedback-app-*.zip
+
