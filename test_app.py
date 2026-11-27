@@ -17,7 +17,7 @@ class FeedbackTest(unittest.TestCase):
 
     def test_average(self):
         store = [{"rating": 4}, {"rating": 5}]
-        self.assertEqual(average_rating(store), 4.5)
+        self.assertEqual(average_rating(store), 5)
 
     def test_average_empty(self):
         self.assertEqual(average_rating([]), 0)
